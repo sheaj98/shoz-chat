@@ -22,6 +22,18 @@ config :shoz_chat, ShozChatWeb.Endpoint,
   pubsub_server: ShozChat.PubSub,
   live_view: [signing_salt: "5irWWdhX"]
 
+# Configures Github OAUTH through Ueberauth
+config :ueberauth, Ueberauth,
+  providers: [
+    github: {Ueberauth.Strategy.Github, [default_scope: "user:email"]}
+  ]
+
+IO.inspect({:system, "GITHUB_CLIENT_ID"})
+
+config :ueberauth, Ueberauth.Strategy.Github.OAuth,
+  client_id: {:system, "GITHUB_CLIENT_ID"},
+  client_secret: {:system, "GITHUB_CLIENT_SECRET"}
+
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails

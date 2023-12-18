@@ -8,16 +8,26 @@ defmodule ShozChatWeb.Router do
     plug :put_root_layout, html: {ShozChatWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug ShozChatWeb.Plugs.SetUser
   end
 
   pipeline :api do
     plug :accepts, ["json"]
   end
 
+  scope "/auth", ShozChatWeb do
+    pipe_through :browser
+
+    get "/signout", AuthController, :signout
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
+  end
+
   scope "/", ShozChatWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    get "/", PageController, :root
+    get "/login", PageController, :login
   end
 
   # Other scopes may use custom stacks.

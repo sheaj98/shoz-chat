@@ -26,8 +26,17 @@ defmodule ShozChatWeb.Router do
   scope "/", ShozChatWeb do
     pipe_through :browser
 
-    get "/", PageController, :root
-    get "/login", PageController, :login
+    get "/", RedirectController, :root
+    get "/login", AuthController, :login
+
+    live_session :authenticated,
+      on_mount: [ShozChatWeb.Nav] do
+      live "/chatrooms", ChatRoomLive.Index, :index
+      live "/chatrooms/new", ChatRoomLive.Index, :new
+      live "/chatrooms/:id", ChatRoomLive.Show, :show
+      live "/chatrooms/:id/edit", ChatRoomLive.Show, :edit
+      live "/chatrooms/:id/new", ChatRoomLive.Show, :new
+    end
   end
 
   # Other scopes may use custom stacks.

@@ -1,0 +1,50 @@
+<.header>
+  Chat room <%= @chat_room.id %>
+  <:subtitle>This is a chat_room record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/chatrooms/#{@chat_room}/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit chat_room</.button>
+    </.link>
+    <.button phx-click="delete" phx-value-id={@chat_room.id}>
+      Delete chatroom
+    </.button>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Id"><%= @chat_room.id %></:item>
+  <:item title="Name"><%= @chat_room.name %></:item>
+  <:item title="Description"><%= @chat_room.description %></:item>
+</.list>
+
+<.modal
+  :if={@live_action == :edit}
+  id="chat_room-modal"
+  show
+  on_cancel={JS.patch(~p"/chatrooms/#{@chat_room}")}
+>
+  <.live_component
+    module={ShozChatWeb.ChatRoomLive.FormComponent}
+    id={@chat_room.id}
+    title={@page_title}
+    action={@live_action}
+    chat_room={@chat_room}
+    patch={~p"/chatrooms/#{@chat_room}"}
+  />
+</.modal>
+
+<.modal
+  :if={@live_action == :new}
+  id="chat_room-modal"
+  show
+  on_cancel={JS.patch(~p"/chatrooms/#{@chat_room}")}
+>
+  <.live_component
+    module={ShozChatWeb.ChatRoomLive.FormComponent}
+    id={@chat_room.id}
+    title={@page_title}
+    action={@live_action}
+    chat_room={%ChatRoom{}}
+    patch={~p"/chatrooms/#{@chat_room}"}
+  />
+</.modal>

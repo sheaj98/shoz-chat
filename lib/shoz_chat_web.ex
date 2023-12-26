@@ -49,10 +49,16 @@ defmodule ShozChatWeb do
     end
   end
 
-  def live_view do
+  def live_view(opts \\ []) do
     quote do
-      use Phoenix.LiveView,
-        layout: {ShozChatWeb.Layouts, :app}
+      @opts Keyword.merge(
+              [
+                layout: {ShozChatWeb.Layouts, :app},
+                container: {:div, class: "relative h-screen flex overflow-hidden bg-white"}
+              ],
+              unquote(opts)
+            )
+      use Phoenix.LiveView, @opts
 
       unquote(html_helpers())
     end

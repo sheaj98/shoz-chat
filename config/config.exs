@@ -28,8 +28,6 @@ config :ueberauth, Ueberauth,
     github: {Ueberauth.Strategy.Github, [default_scope: "user:email"]}
   ]
 
-IO.inspect({:system, "GITHUB_CLIENT_ID"})
-
 config :ueberauth, Ueberauth.Strategy.Github.OAuth,
   client_id: {:system, "GITHUB_CLIENT_ID"},
   client_secret: {:system, "GITHUB_CLIENT_SECRET"}

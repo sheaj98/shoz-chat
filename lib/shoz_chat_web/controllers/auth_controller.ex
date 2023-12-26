@@ -4,6 +4,10 @@ defmodule ShozChatWeb.AuthController do
 
   alias ShozChat.Accounts
 
+  def login(conn, _params) do
+    render(conn, :login, layout: false)
+  end
+
   def callback(%{assigns: %{ueberauth_auth: auth}} = conn, params) do
     user_data = %{token: auth.credentials.token, email: auth.info.email, provider: "github"}
 

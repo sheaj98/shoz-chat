@@ -1,21 +1,24 @@
 <.header>
-  Chat room <%= @chat_room.id %>
-  <:subtitle>This is a chat_room record from your database.</:subtitle>
+  <%= @chat_room.name %>
+  <:subtitle><%= @chat_room.description %></:subtitle>
   <:actions>
     <.link patch={~p"/chatrooms/#{@chat_room}/edit"} phx-click={JS.push_focus()}>
-      <.button>Edit chat_room</.button>
+      <.button>Edit chatroom</.button>
     </.link>
     <.button phx-click="delete" phx-value-id={@chat_room.id}>
       Delete chatroom
     </.button>
   </:actions>
 </.header>
-
-<.list>
-  <:item title="Id"><%= @chat_room.id %></:item>
-  <:item title="Name"><%= @chat_room.name %></:item>
-  <:item title="Description"><%= @chat_room.description %></:item>
-</.list>
+<div class="flex flex-col h-full mt-3">
+  <Messages.list_messages messages={@streams.messages} scrolled_to_top={@scrolled_to_top} />
+  <.live_component
+    module={ShozChatWeb.ChatRoomLive.MessageBox}
+    chat_room_id={@chat_room.id}
+    sender_id={@current_user.id}
+    id={"room-#{@chat_room.id}-message-form"}
+  />
+</div>
 
 <.modal
   :if={@live_action == :edit}

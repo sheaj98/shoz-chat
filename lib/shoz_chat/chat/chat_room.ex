@@ -1,10 +1,13 @@
 defmodule ShozChat.Chat.ChatRoom do
+  alias ShozChat.Chat.Message
   use Ecto.Schema
   import Ecto.Changeset
 
   schema "chatrooms" do
     field :name, :string
     field :description, :string
+
+    has_many :messages, Message
 
     timestamps(type: :utc_datetime)
   end

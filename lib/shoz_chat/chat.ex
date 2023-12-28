@@ -4,9 +4,12 @@ defmodule ShozChat.Chat do
   """
 
   import Ecto.Query, warn: false
+  alias ShozChat.Chat.Message
   alias ShozChat.Repo
 
   alias ShozChat.Chat.ChatRoom
+
+  alias ShozChatWeb.Endpoint
 
   @doc """
   Returns the list of chatrooms.
@@ -101,4 +104,53 @@ defmodule ShozChat.Chat do
   def change_chat_room(%ChatRoom{} = chat_room, attrs \\ %{}) do
     ChatRoom.changeset(chat_room, attrs)
   end
+
+  def change_message(%Message{} = message, attrs \\ %{}) do
+    Message.changeset(message, attrs)
+  end
+
+  def get_messages_for_room(chat_room_id) do
+    Message.Query.for_room(chat_room_id)
+    |> Repo.all()
+    |> Repo.preload(:sender)
+  end
+
+  def get_previous_n_messages(id, chat_room_id, n) do
+    Message.Query.previous_n(id, chat_room_id, n)
+    |> Repo.all()
+    |> Repo.preload(:sender)
+  end
+
+  def create_message(attrs \\ %{}) do
+    %Message{}
+    |> Message.changeset(attrs)
+    |> Repo.insert()
+    |> publish_message_created()
+  end
+
+  def update_message(%Message{} = message, attrs) do
+    message
+    |> Message.changeset(attrs)
+    |> Repo.update()
+    |> publish_message_updated()
+  end
+
+  def preload_message_sender(message) do
+    message
+    |> Repo.preload(:sender)
+  end
+
+  def publish_message_created({:ok, message} = result) do
+    Endpoint.broadcast("room:#{message.chat_room_id}", "new_message", %{message: message})
+    result
+  end
+
+  def publish_message_created(result), do: result
+
+  def publish_message_updated({:ok, message} = result) do
+    Endpoint.broadcast("room:#{message.chat_room_id}", "updated_message", %{message: message})
+    result
+  end
+
+  def publish_message_updated(result), do: result
 end

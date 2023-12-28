@@ -30,7 +30,7 @@ defmodule ShozChatWeb.Router do
     get "/login", AuthController, :login
 
     live_session :authenticated,
-      on_mount: [ShozChatWeb.Nav] do
+      on_mount: [{ShozChatWeb.Auth, :ensure_authenticated}, ShozChatWeb.Nav] do
       live "/chatrooms", ChatRoomLive.Index, :index
       live "/chatrooms/new", ChatRoomLive.Index, :new
       live "/chatrooms/:id", ChatRoomLive.Show, :show

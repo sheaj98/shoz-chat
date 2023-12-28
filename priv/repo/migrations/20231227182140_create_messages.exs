@@ -5,7 +5,7 @@ defmodule ShozChat.Repo.Migrations.CreateMessages do
     create table(:messages) do
       add :content, :string
       add :sender_id, references(:users, on_delete: :nothing)
-      add :chat_room_id, references(:chatrooms, on_delete: :nothing)
+      add :chat_room_id, references(:chatrooms, on_delete: :delete_all)
 
       timestamps(type: :utc_datetime)
     end

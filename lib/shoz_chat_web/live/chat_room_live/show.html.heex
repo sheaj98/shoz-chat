@@ -4,11 +4,13 @@
     <:subtitle><%= @chat_room.description %></:subtitle>
     <:actions>
       <.link patch={~p"/chatrooms/#{@chat_room}/edit"} phx-click={JS.push_focus()}>
-        <.button>Edit chatroom</.button>
+        <.button class="w-full">Edit chatroom</.button>
       </.link>
-      <.button phx-click="delete" phx-value-id={@chat_room.id}>
-        Delete chatroom
-      </.button>
+      <div>
+        <.button class="w-full" phx-click="delete" phx-value-id={@chat_room.id}>
+          Delete chatroom
+        </.button>
+      </div>
     </:actions>
   </.header>
   <Messages.list_messages messages={@streams.messages} scrolled_to_top={@scrolled_to_top} />

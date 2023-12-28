@@ -6,6 +6,34 @@ defmodule ShozChatWeb.Sidebar do
 
   def sidebar(assigns) do
     ~H"""
+    <div class="relative z-10 flex h-16 bg-white border-b border-gray-200 lg:hidden" role="navigation">
+      <button
+        type="button"
+        id="show-mobile-sidebar"
+        aria-expanded="false"
+        aria-controls="mobile-sidebar"
+        class="px-4 border-r border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-purple-500 lg:hidden"
+        phx-click={show_mobile_sidebar()}
+      >
+        <span class="sr-only">Open sidebar</span>
+        <svg
+          class="h-6 w-6"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h8m-8 6h16"
+          >
+          </path>
+        </svg>
+      </button>
+    </div>
     <aside>
       <div
         id="mobile-sidebar-container"
@@ -56,15 +84,41 @@ defmodule ShozChatWeb.Sidebar do
               </span>
             </.link>
           </div>
-          <div class="mt-5 flex-1 h-0 overflow-y-auto">
-            <nav class="px-2">
-              <p>Chat Rooms</p>
+          
+            <nav class="px-3 mt-6">
+              <div class="flex justify-between align-middle ">
+                <h3 class="px-3 text-s font-semibold text-gray-500 uppercase tracking-wider">
+                  Channels
+                </h3>
+                <a
+                  href={
+                    if @active_tab != nil,
+                      do: "/chatrooms/#{@active_tab}/new",
+                      else: "/chatrooms/new"
+                  }
+                  id="add-new-chatroom"
+                  class=" flex items-center justify-center h-5 w-5"
+                >
+                  <span class="sr-only">Close sidebar</span>
+                  <.icon name="hero-plus" class="text-neutral-400 hover:text-neutral-100" />
+                </a>
+              </div>
+              <div id="chatrooms" class="px-3 mt-3 flex flex-col gap-2" phx-update="stream">
+                <%= for {id, chatroom} <- @chatrooms do %>
+                  <a
+                    class={"cursor-pointer #{if @active_tab == Integer.to_string(chatroom.id), do: "text-neutral-800 font-semibold", else: "text-neutral-600 hover:font-semibold"}"}
+                    id={id}
+                    class="name"
+                    href={~p"/chatrooms/#{chatroom.id}"}
+                    aria-current={
+                      if @active_tab == Integer.to_string(chatroom.id), do: "true", else: "false"
+                    }
+                  >
+                    # <%= chatroom.name %>
+                  </a>
+                <% end %>
+              </div>
             </nav>
-          </div>
-        </div>
-
-        <div class="flex-shrink-0 w-14" aria-hidden="true">
-          <!-- Dummy element to force sidebar to shrink to fit close icon -->
         </div>
       </div>
       <!-- Static sidebar for desktop -->
@@ -98,7 +152,7 @@ defmodule ShozChatWeb.Sidebar do
                   <.icon name="hero-plus" class="text-neutral-400 hover:text-neutral-100" />
                 </a>
               </div>
-              <div id="chatrooms" class="px-3 flex flex-col gap-2" phx-update="stream">
+              <div id="chatrooms" class="px-3 mt-3 flex flex-col gap-2" phx-update="stream">
                 <%= for {id, chatroom} <- @chatrooms do %>
                   <a
                     class={"cursor-pointer #{if @active_tab == Integer.to_string(chatroom.id), do: "text-neutral-100 font-semibold", else: "text-neutral-300 hover:text-neutral-100"}"}
@@ -115,41 +169,6 @@ defmodule ShozChatWeb.Sidebar do
               </div>
             </nav>
           </div>
-        </div>
-      </div>
-      <!-- Main column -->
-      <div class="flex flex-col w-0 flex-1 overflow-hidden">
-        <!-- Search header -->
-        <div
-          class="relative z-10 flex-shrink-0 flex h-16 bg-white border-b border-gray-200 lg:hidden"
-          role="navigation"
-        >
-          <button
-            type="button"
-            id="show-mobile-sidebar"
-            aria-expanded="false"
-            aria-controls="mobile-sidebar"
-            class="px-4 border-r h-5 w-5 border-gray-200 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-purple-500 lg:hidden"
-            phx-click={show_mobile_sidebar()}
-          >
-            <span class="sr-only">Open sidebar</span>
-            <svg
-              class="h-6 w-6"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 6h16M4 12h8m-8 6h16"
-              >
-              </path>
-            </svg>
-          </button>
         </div>
       </div>
     </aside>

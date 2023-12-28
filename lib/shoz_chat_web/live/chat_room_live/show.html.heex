@@ -1,16 +1,16 @@
-<.header>
-  <%= @chat_room.name %>
-  <:subtitle><%= @chat_room.description %></:subtitle>
-  <:actions>
-    <.link patch={~p"/chatrooms/#{@chat_room}/edit"} phx-click={JS.push_focus()}>
-      <.button>Edit chatroom</.button>
-    </.link>
-    <.button phx-click="delete" phx-value-id={@chat_room.id}>
-      Delete chatroom
-    </.button>
-  </:actions>
-</.header>
-<div class="flex flex-col h-full mt-3">
+<div class="flex flex-col h-full">
+  <.header>
+    <%= @chat_room.name %>
+    <:subtitle><%= @chat_room.description %></:subtitle>
+    <:actions>
+      <.link patch={~p"/chatrooms/#{@chat_room}/edit"} phx-click={JS.push_focus()}>
+        <.button>Edit chatroom</.button>
+      </.link>
+      <.button phx-click="delete" phx-value-id={@chat_room.id}>
+        Delete chatroom
+      </.button>
+    </:actions>
+  </.header>
   <Messages.list_messages messages={@streams.messages} scrolled_to_top={@scrolled_to_top} />
   <.live_component
     module={ShozChatWeb.ChatRoomLive.MessageBox}

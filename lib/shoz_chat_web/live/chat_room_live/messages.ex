@@ -6,7 +6,7 @@ defmodule ShozChatWeb.ChatRoomLive.Messages do
     <div
       id="messages"
       phx-update="stream"
-      class="overflow-scroll"
+      class="overflow-scroll flex-auto mt-3"
       style="height: calc(88vh - 10rem)"
       phx-hook="ScrollDown"
       data-scrolled-to-top={@scrolled_to_top}

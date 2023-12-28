@@ -26,6 +26,8 @@ defmodule ShozChatWeb.ChatRoomLive.Show do
     socket
     |> assign(:page_title, "New Chat room")
     |> assign(:chat_room, Chat.get_chat_room!(id))
+    |> assign_message_stream()
+    |> assign_scrolled_to_top()
   end
 
   defp apply_action(socket, :show, %{"id" => id}) do
@@ -88,18 +90,22 @@ defmodule ShozChatWeb.ChatRoomLive.Show do
 
   @impl true
   def handle_event("load_more", _params, socket) do
-    messages =
-      Chat.get_previous_n_messages(
-        socket.assigns.oldest_message_id,
-        socket.assigns.chat_room.id,
-        5
-      )
+    if socket.assigns[:oldest_message_id] == nil do
+      {:noreply, socket}
+    else
+      messages =
+        Chat.get_previous_n_messages(
+          socket.assigns.oldest_message_id,
+          socket.assigns.chat_room.id,
+          5
+        )
 
-    {:noreply,
-     socket
-     |> stream(:messages, messages, at: 0)
-     |> assign_oldest_message_id(List.last(messages))
-     |> assign_scrolled_to_top("true")}
+      {:noreply,
+       socket
+       |> stream(:messages, messages, at: 0)
+       |> assign_oldest_message_id(List.last(messages))
+       |> assign_scrolled_to_top("true")}
+    end
   end
 
   @impl true
